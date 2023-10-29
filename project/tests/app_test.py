@@ -76,6 +76,7 @@ def test_messages(client):
     assert b"&lt;Hello&gt;" in rv.data
     assert b"<strong>HTML</strong> allowed here" in rv.data
 
+
 def test_search(client):
     """Ensure that user can search messages"""
     login(client, app.config["USERNAME"], app.config["PASSWORD"])
@@ -87,7 +88,7 @@ def test_search(client):
     assert b"No entries here so far" not in rv.data
     assert b"&lt;Test&gt;" in rv.data
     assert b"test" in rv.data
-    
+
     lv = client.get(
         "search/?query=test",
         follow_redirects=True,
