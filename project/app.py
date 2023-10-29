@@ -69,6 +69,14 @@ def logout():
     flash('You were logged out')
     return redirect(url_for('index'))
 
+@app.route('/search/', methods=['GET'])
+def search():
+    query = request.args.get("query")
+    entries = db.session.query(models.Post)
+    if query:
+        return render_template('search.html', entries=entries, query=query)
+    return render_template('search.html')
+
 
 @app.route('/delete/<int:post_id>', methods=['GET'])
 def delete_entry(post_id):

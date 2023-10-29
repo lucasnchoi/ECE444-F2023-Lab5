@@ -42,7 +42,7 @@ def test_index(client):
 
 def test_database(client):
     """initial test. ensure that the database exists"""
-    tester = Path("flaskr.db").is_file()
+    tester = Path("test.db").is_file()
     assert tester
 
 
@@ -75,6 +75,26 @@ def test_messages(client):
     assert b"No entries here so far" not in rv.data
     assert b"&lt;Hello&gt;" in rv.data
     assert b"<strong>HTML</strong> allowed here" in rv.data
+
+def test_search(client):
+    """Ensure that user can search messages"""
+    login(client, app.config["USERNAME"], app.config["PASSWORD"])
+    rv = client.post(
+        "/add",
+        data=dict(title="<Test>", text="test"),
+        follow_redirects=True,
+    )
+    assert b"No entries here so far" not in rv.data
+    assert b"&lt;Test&gt;" in rv.data
+    assert b"test" in rv.data
+    
+    lv = client.get(
+        "search/?query=test",
+        follow_redirects=True,
+    )
+    assert b"&lt;Test&gt;" in lv.data
+    assert b"test" in lv.data
+
 
 def test_delete_message(client):
     """Ensure the messages are being deleted"""
